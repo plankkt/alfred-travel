@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f7fb" />
+    <meta
+      name="description"
+      content="Учебный прототип помощника при изменениях рейса"
+    />
+    <title>Альфред — поездка под контролем</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="#top" aria-label="Альфред, главная"
+          ><span class="brand-mark">✦</span
+          ><span>альфред<span class="brand-dot">.</span></span></a
+        >
+        <div class="sidebar-label">МОЯ ПОЕЗДКА</div>
+        <nav aria-label="Разделы">
+          <a class="nav-link active" href="#overview"
+            ><span>▦</span> Обзор поездки</a
+          >
+          <a class="nav-link" href="#timeline"><span>◷</span> План маршрута</a>
+          <a class="nav-link" href="#alternatives"><span>◇</span> Варианты</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="avatar">А</div>
+          <div>
+            <strong>Александр</strong><small>Организатор поездки</small>
+          </div>
+        </div>
+      </aside>
+
+      <main id="top" class="main">
+        <header class="topbar">
+          <div class="breadcrumb">
+            Мои поездки <span>/</span> Италия, ноябрь 2026
+          </div>
+          <div class="top-actions">
+            <span class="live-indicator"><i></i> Демо-режим</span>
+            <button
+              id="connectionButton"
+              class="connection-button"
+              type="button"
+              aria-pressed="false"
+            >
+              ● В сети
+            </button>
+          </div>
+        </header>
+
+        <div class="content">
+          <section id="overview" class="hero">
+            <div>
+              <p class="eyebrow">ПУТЕШЕСТВИЕ · 12–18 НОЯБРЯ</p>
+              <h1>Италия ждёт вас <span>☀</span></h1>
+              <p class="hero-subtitle">
+                Один план для всей группы. Альфред следит за изменениями и
+                помогает сохранить поездку.
+              </p>
+              <div class="travelers">
+                <span class="traveler t1">А</span
+                ><span class="traveler t2">М</span
+                ><span class="traveler t3">Д</span
+                ><span class="traveler-count">3 путешественника</span>
+              </div>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+              <span class="sun"></span><span class="hill hill-one"></span
+              ><span class="hill hill-two"></span><span class="plane">✈</span>
+            </div>
+          </section>
+
+          <section class="demo-controls" aria-labelledby="demoTitle">
+            <div>
+              <p class="eyebrow">ИНТЕРАКТИВНЫЙ СЦЕНАРИЙ</p>
+              <h2 id="demoTitle">Что случилось с рейсом?</h2>
+              <p>Выберите событие, чтобы увидеть, как Альфред реагирует.</p>
+            </div>
+            <div class="scenario-buttons">
+              <button
+                class="scenario-button"
+                data-scenario="delay"
+                type="button"
+              >
+                ◷ Задержка
+              </button>
+              <button
+                class="scenario-button"
+                data-scenario="cancel"
+                type="button"
+              >
+                ✕ Отмена
+              </button>
+              <button
+                class="scenario-button quiet"
+                data-scenario="normal"
+                type="button"
+              >
+                ↺ Сбросить
+              </button>
+            </div>
+          </section>
+
+          <section
+            id="alertSection"
+            class="alert-section"
+            aria-live="polite"
+          ></section>
+
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">ВАШ МАРШРУТ</p>
+              <h2>Ближайшие события</h2>
+            </div>
+            <span id="planStatus" class="pill">Всё по плану</span>
+          </div>
+          <section
+            id="timeline"
+            class="timeline-card"
+            aria-label="План маршрута"
+          ></section>
+
+          <section
+            id="alternatives"
+            class="alternatives-section"
+            aria-labelledby="alternativesTitle"
+          >
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">АЛЬФРЕД ПОДСКАЗЫВАЕТ</p>
+                <h2 id="alternativesTitle">Подходящие варианты</h2>
+              </div>
+              <span id="optionCount" class="count"></span>
+            </div>
+            <div id="alternativesContent"></div>
+          </section>
+
+          <section class="how-it-works" aria-labelledby="howTitle">
+            <p class="eyebrow">ЗА КУЛИСАМИ</p>
+            <h2 id="howTitle">Как Альфред принимает решение</h2>
+            <div class="steps">
+              <div>
+                <b>01</b><strong>Получает статус</strong
+                ><span>Локальный API имитирует поставщика данных о рейсе.</span>
+              </div>
+              <div>
+                <b>02</b><strong>Проверяет маршрут</strong
+                ><span
+                  >Сверяет время прилёта с трансфером и остальным планом.</span
+                >
+              </div>
+              <div>
+                <b>03</b><strong>Предлагает варианты</strong
+                ><span
+                  >Учитывает группу, багаж, визовые условия и запас
+                  времени.</span
+                >
+              </div>
+              <div>
+                <b>04</b><strong>Обновляет план</strong
+                ><span
+                  >После выбора меняет связанные события для всех
+                  участников.</span
+                >
+              </div>
+            </div>
+          </section>
+
+          <footer class="page-footer">
+            Учебный прототип · Данные демонстрационные · Паспортные данные не
+            собираются и не хранятся
+          </footer>
+        </div>
+      </main>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>
