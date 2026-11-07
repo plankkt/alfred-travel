@@ -162,6 +162,13 @@ function formatSourceTime(value, timeZone, zoneLabel) {
 }
 
 async function loadFlightStatus(scenario) {
+  // На статическом хостинге используем тот же источник, что и локальный API.
+  if (location.hostname.endsWith(".github.io")) {
+    const response = await fetch("./data/flight-statuses.json");
+    if (!response.ok) throw new Error("Не удалось загрузить статус");
+    const data = await response.json();
+    return { flightId: data.flightId, scheduled: data.scheduled, ...data.scenarios[scenario] };
+  }
   const response = await fetch(
     `/api/flight-status?scenario=${encodeURIComponent(scenario)}`,
     { cache: "no-store" },
@@ -275,6 +282,8 @@ function renderOptions() {
 
 function render() {
   renderTimeline();
+  $("#coverStatus").textContent = $("#planStatus").textContent;
+  try { localStorage.setItem("alfred-trip-v1", JSON.stringify(state)); } catch { /* Хранилище может быть отключено. */ }
   renderAlert();
   renderOptions();
   document
@@ -338,5 +347,13 @@ $("#connectionButton").addEventListener("click", () => {
   }
   render();
 });
+
+try {
+  const saved = JSON.parse(localStorage.getItem("alfred-trip-v1"));
+  if (saved && ["normal", "delay", "cancel"].includes(saved.scenario)) {
+    Object.assign(state, saved);
+    state.selectedOption = scenarios[state.scenario]?.options.find(option => option.id === saved.selectedOption?.id) || null;
+  }
+} catch { /* Повреждённый снимок не мешает открыть исходный маршрут. */ }
 
 render();

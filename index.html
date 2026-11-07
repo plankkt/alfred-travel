@@ -14,32 +14,9 @@
   </head>
   <body>
     <div class="app-shell">
-      <aside class="sidebar">
-        <a class="brand" href="#top" aria-label="Альфред, главная"
-          ><span class="brand-mark">✦</span
-          ><span>альфред<span class="brand-dot">.</span></span></a
-        >
-        <div class="sidebar-label">МОЯ ПОЕЗДКА</div>
-        <nav aria-label="Разделы">
-          <a class="nav-link active" href="#overview"
-            ><span>▦</span> Обзор поездки</a
-          >
-          <a class="nav-link" href="#timeline"><span>◷</span> План маршрута</a>
-          <a class="nav-link" href="#alternatives"><span>◇</span> Варианты</a>
-        </nav>
-        <div class="sidebar-bottom">
-          <div class="avatar">А</div>
-          <div>
-            <strong>Александр</strong><small>Организатор поездки</small>
-          </div>
-        </div>
-      </aside>
-
       <main id="top" class="main">
         <header class="topbar">
-          <div class="breadcrumb">
-            Мои поездки <span>/</span> Италия, ноябрь 2026
-          </div>
+          <a class="wordmark" href="#top">✦ Альфред.</a> <span class="edition">ПУТЕВОЙ ДНЕВНИК / 01</span>
           <div class="top-actions">
             <span class="live-indicator"><i></i> Демо-режим</span>
             <button
@@ -55,24 +32,10 @@
 
         <div class="content">
           <section id="overview" class="hero">
-            <div>
-              <p class="eyebrow">ПУТЕШЕСТВИЕ · 12–18 НОЯБРЯ</p>
-              <h1>Италия ждёт вас <span>☀</span></h1>
-              <p class="hero-subtitle">
-                Один план для всей группы. Альфред следит за изменениями и
-                помогает сохранить поездку.
-              </p>
-              <div class="travelers">
-                <span class="traveler t1">А</span
-                ><span class="traveler t2">М</span
-                ><span class="traveler t3">Д</span
-                ><span class="traveler-count">3 путешественника</span>
-              </div>
-            </div>
-            <div class="hero-art" aria-hidden="true">
-              <span class="sun"></span><span class="hill hill-one"></span
-              ><span class="hill hill-two"></span><span class="plane">✈</span>
-            </div>
+            <nav class="atlas-nav" aria-label="Навигация по поездке"><a href="#timeline">Маршрут</a><a href="#alternatives">Варианты</a><a href="#demoTitle">События</a></nav>
+            <div class="cover-title"><p>ИТАЛИЯ &nbsp; / &nbsp; НОЯБРЬ 2026</p><h1>Рим и<br><em>Флоренция.</em></h1></div>
+            <div class="boarding"><small>МАРШРУТ ГРУППЫ · 03 ПАССАЖИРА</small><strong>SVO <i>⟶</i> FCO</strong><span>Москва → Рим · 12–18 ноября</span></div>
+            <a class="glass-pass" href="#timeline"><small>ОБЩИЙ ПЛАН ↗</small><strong id="coverStatus">Всё по плану</strong><span>Открыть маршрут →</span></a>
           </section>
 
           <section class="demo-controls" aria-labelledby="demoTitle">
