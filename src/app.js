@@ -266,8 +266,20 @@ function renderOptions() {
     return;
   }
   const scenario = scenarios[state.scenario];
-  $("#optionCount").textContent = `${scenario.options.length} варианта`;
-  container.innerHTML = `<div class="option-list">${scenario.options
+  // Время отправления указано в местной зоне Рима. Разность ISO-дат
+  // даёт минуты ожидания независимо от часового пояса ноутбука.
+  const departures = {
+    "late-transfer": "2026-11-12T16:30:00+01:00",
+    train: "2026-11-12T17:20:00+01:00",
+  };
+  const options = scenario.options.flatMap(option => {
+    if (!departures[option.id]) return [option];
+    const minutes = (Date.parse(departures[option.id]) - Date.parse(state.flightStatus?.estimatedArrival)) / 60000;
+    if (!Number.isFinite(minutes) || minutes < 60) return [];
+    return [{ ...option, checks: [...option.checks.slice(0, 2), `До отправления: ${minutes} мин`] }];
+  });
+  $("#optionCount").textContent = `Доступно: ${options.length}`;
+  container.innerHTML = `<div class="option-list">${options
     .map(
       (option) => `
     <article class="option-card ${option.recommended ? "recommended" : ""}">
