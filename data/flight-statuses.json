@@ -1,29 +1,89 @@
 {
-  "flightId": "SU2402-2026-11-12",
-  "source": "Demo Flight Status Provider",
-  "scheduled": {
-    "departure": "2026-11-12T10:20:00+03:00",
-    "arrival": "2026-11-12T12:00:00+01:00"
+  "rome": {
+    "flightId": "SU2402-2026-11-12",
+    "source": "Demo Flight Status Provider",
+    "scheduled": {
+      "departure": "2026-11-12T10:20:00+03:00",
+      "arrival": "2026-11-12T12:00:00+01:00"
+    },
+    "scenarios": {
+      "normal": {
+        "status": "scheduled",
+        "sourceUpdatedAt": "2026-11-12T07:00:00+03:00",
+        "receivedAt": "2026-11-12T07:03:00+03:00",
+        "estimatedArrival": "2026-11-12T12:00:00+01:00"
+      },
+      "delay": {
+        "status": "delayed",
+        "delayMinutes": 180,
+        "sourceUpdatedAt": "2026-11-12T09:10:00+03:00",
+        "receivedAt": "2026-11-12T09:25:00+03:00",
+        "estimatedArrival": "2026-11-12T15:00:00+01:00"
+      },
+      "cancel": {
+        "status": "cancelled",
+        "sourceUpdatedAt": "2026-11-12T07:32:00+03:00",
+        "receivedAt": "2026-11-12T07:40:00+03:00",
+        "estimatedArrival": null
+      }
+    }
   },
-  "scenarios": {
-    "normal": {
-      "status": "scheduled",
-      "sourceUpdatedAt": "2026-11-12T07:00:00+03:00",
-      "receivedAt": "2026-11-12T07:03:00+03:00",
-      "estimatedArrival": "2026-11-12T12:00:00+01:00"
+  "paris": {
+    "flightId": "AF1802-2026-11-12",
+    "source": "Demo Flight Status Provider",
+    "scheduled": {
+      "departure": "2026-11-12T10:20:00+03:00",
+      "arrival": "2026-11-12T12:00:00+01:00"
     },
-    "delay": {
-      "status": "delayed",
-      "delayMinutes": 180,
-      "sourceUpdatedAt": "2026-11-12T09:10:00+03:00",
-      "receivedAt": "2026-11-12T09:25:00+03:00",
-      "estimatedArrival": "2026-11-12T15:00:00+01:00"
+    "scenarios": {
+      "normal": {
+        "status": "scheduled",
+        "sourceUpdatedAt": "2026-11-12T07:00:00+03:00",
+        "receivedAt": "2026-11-12T07:03:00+03:00",
+        "estimatedArrival": "2026-11-12T12:00:00+01:00"
+      },
+      "delay": {
+        "status": "delayed",
+        "delayMinutes": 180,
+        "sourceUpdatedAt": "2026-11-12T09:10:00+03:00",
+        "receivedAt": "2026-11-12T09:25:00+03:00",
+        "estimatedArrival": "2026-11-12T15:00:00+01:00"
+      },
+      "cancel": {
+        "status": "cancelled",
+        "sourceUpdatedAt": "2026-11-12T07:32:00+03:00",
+        "receivedAt": "2026-11-12T07:40:00+03:00",
+        "estimatedArrival": null
+      }
+    }
+  },
+  "barcelona": {
+    "flightId": "VY1802-2026-11-12",
+    "source": "Demo Flight Status Provider",
+    "scheduled": {
+      "departure": "2026-11-12T10:20:00+03:00",
+      "arrival": "2026-11-12T12:00:00+01:00"
     },
-    "cancel": {
-      "status": "cancelled",
-      "sourceUpdatedAt": "2026-11-12T07:32:00+03:00",
-      "receivedAt": "2026-11-12T07:40:00+03:00",
-      "estimatedArrival": null
+    "scenarios": {
+      "normal": {
+        "status": "scheduled",
+        "sourceUpdatedAt": "2026-11-12T07:00:00+03:00",
+        "receivedAt": "2026-11-12T07:03:00+03:00",
+        "estimatedArrival": "2026-11-12T12:00:00+01:00"
+      },
+      "delay": {
+        "status": "delayed",
+        "delayMinutes": 180,
+        "sourceUpdatedAt": "2026-11-12T09:10:00+03:00",
+        "receivedAt": "2026-11-12T09:25:00+03:00",
+        "estimatedArrival": "2026-11-12T15:00:00+01:00"
+      },
+      "cancel": {
+        "status": "cancelled",
+        "sourceUpdatedAt": "2026-11-12T07:32:00+03:00",
+        "receivedAt": "2026-11-12T07:40:00+03:00",
+        "estimatedArrival": null
+      }
     }
   }
 }

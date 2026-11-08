@@ -24,7 +24,11 @@ class DemoHandler(SimpleHTTPRequestHandler):
 
         scenario = parse_qs(request.query).get("scenario", ["normal"])[0]
         with DATA_FILE.open(encoding="utf-8") as file:
-            data = json.load(file)
+            records = json.load(file)
+        trip = parse_qs(request.query).get("trip", ["rome"])[0]
+        if trip not in records:
+            return self.send_json({"error": "Unknown trip"}, 404)
+        data = records[trip]
 
         if scenario not in data["scenarios"]:
             return self.send_json({"error": "Unknown scenario"}, 400)
