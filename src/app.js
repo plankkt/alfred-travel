@@ -426,4 +426,15 @@ try {
   /* Повреждённый снимок не мешает открыть исходный маршрут. */
 }
 
+const pages = [...document.querySelectorAll("[data-page]")];
+const requestedPage = new URLSearchParams(location.search).get("page");
+const activePage =
+  pages.find((page) => page.dataset.page === requestedPage) || pages[0];
+for (const page of pages) page.hidden = page !== activePage;
+const activeLink = document.querySelector(
+  `[data-link="${activePage.dataset.page}"]`,
+);
+activeLink.setAttribute("aria-current", "page");
+document.title = activeLink.querySelector("span").textContent + " · Альфред";
+
 render();

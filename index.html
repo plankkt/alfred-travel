@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#102b26" />
+    <meta name="theme-color" content="#0b0b0b" />
     <meta
       name="description"
       content="Учебный прототип помощника при изменениях рейса"
@@ -16,7 +16,8 @@
     <div class="app-shell">
       <main id="top" class="main">
         <header class="topbar">
-          <a class="wordmark" href="#top">✦ Альфред.</a> <span class="edition">Планировщик поездок</span>
+          <a class="wordmark" href="?page=overview">✦ Альфред.</a>
+          <span class="edition">Планировщик поездок</span>
           <div class="top-actions">
             <span class="live-indicator"><i></i> Демо-режим</span>
             <button
@@ -30,65 +31,92 @@
           </div>
         </header>
 
+        <nav class="rail" aria-label="Меню поездки">
+          <a href="?page=overview" data-link="overview"
+            ><b aria-hidden="true">✦</b><span>Обзор</span></a
+          ><a href="?page=route" data-link="route"
+            ><b aria-hidden="true">↗</b><span>Маршрут</span></a
+          ><a href="?page=events" data-link="events"
+            ><b aria-hidden="true">◷</b><span>События</span></a
+          ><a href="?page=options" data-link="options"
+            ><b aria-hidden="true">◇</b><span>Варианты</span></a
+          >
+        </nav>
         <div class="content">
-          <section id="overview" class="hero">
-            <nav class="atlas-nav" aria-label="Навигация по поездке"><a href="#timeline">Маршрут</a><a href="#alternatives">Варианты</a><a href="#demoTitle">События</a></nav>
-            <div class="cover-title"><p>ИТАЛИЯ &nbsp; / &nbsp; НОЯБРЬ 2026</p><h1>Рим и<br><em>Флоренция.</em></h1></div>
-            <div class="boarding"><small>МАРШРУТ ГРУППЫ · 03 ПАССАЖИРА</small><strong>SVO <i>⟶</i> FCO</strong><span>Москва → Рим · 12–18 ноября</span></div>
-            <a class="glass-pass" href="#timeline"><small>ОБЩИЙ ПЛАН ↗</small><strong id="coverStatus">Всё по плану</strong><span>Открыть маршрут →</span></a>
+          <section data-page="overview" id="overview" class="hero">
+            <div class="cover-title">
+              <p>ИТАЛИЯ &nbsp; / &nbsp; НОЯБРЬ 2026</p>
+              <h1>Рим и<br /><em>Флоренция.</em></h1>
+            </div>
+            <div class="boarding">
+              <small>МАРШРУТ ГРУППЫ · 03 ПАССАЖИРА</small
+              ><strong>SVO <i>⟶</i> FCO</strong
+              ><span>Москва → Рим · 12–18 ноября</span>
+            </div>
+            <a class="glass-pass" href="?page=route"
+              ><small>ОБЩИЙ ПЛАН ↗</small
+              ><strong id="coverStatus">Всё по плану</strong
+              ><span>Открыть маршрут →</span></a
+            >
           </section>
 
-          <section class="demo-controls" aria-labelledby="demoTitle">
-            <div>
-              <p class="eyebrow">Статус рейса</p>
-              <h2 id="demoTitle">События рейса SU 2402</h2>
-              <p>Выберите событие для демонстрации.</p>
-            </div>
-            <div class="scenario-buttons">
-              <button
-                class="scenario-button"
-                data-scenario="delay"
-                type="button"
-              >
-                ◷ Задержка
-              </button>
-              <button
-                class="scenario-button"
-                data-scenario="cancel"
-                type="button"
-              >
-                ✕ Отмена
-              </button>
-              <button
-                class="scenario-button quiet"
-                data-scenario="normal"
-                type="button"
-              >
-                ↺ Сбросить
-              </button>
-            </div>
+          <section hidden data-page="events">
+            <section class="demo-controls" aria-labelledby="demoTitle">
+              <div>
+                <p class="eyebrow">Статус рейса</p>
+                <h2 id="demoTitle">События рейса SU 2402</h2>
+                <p>Выберите событие для демонстрации.</p>
+              </div>
+              <div class="scenario-buttons">
+                <button
+                  class="scenario-button"
+                  data-scenario="delay"
+                  type="button"
+                >
+                  ◷ Задержка
+                </button>
+                <button
+                  class="scenario-button"
+                  data-scenario="cancel"
+                  type="button"
+                >
+                  ✕ Отмена
+                </button>
+                <button
+                  class="scenario-button quiet"
+                  data-scenario="normal"
+                  type="button"
+                >
+                  ↺ Сбросить
+                </button>
+              </div>
+            </section>
+
+            <section
+              id="alertSection"
+              class="alert-section"
+              aria-live="polite"
+            ></section>
+
+            <a class="next" href="?page=options">Посмотреть варианты →</a>
           </section>
-
-          <section
-            id="alertSection"
-            class="alert-section"
-            aria-live="polite"
-          ></section>
-
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">ВАШ МАРШРУТ</p>
-              <h2>Расписание поездки</h2>
+          <section hidden data-page="route">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">ВАШ МАРШРУТ</p>
+                <h2>Расписание поездки</h2>
+              </div>
+              <span id="planStatus" class="pill">Всё по плану</span>
             </div>
-            <span id="planStatus" class="pill">Всё по плану</span>
-          </div>
+            <section
+              id="timeline"
+              class="timeline-card"
+              aria-label="План маршрута"
+            ></section>
+          </section>
           <section
-            id="timeline"
-            class="timeline-card"
-            aria-label="План маршрута"
-          ></section>
-
-          <section
+            hidden
+            data-page="options"
             id="alternatives"
             class="alternatives-section"
             aria-labelledby="alternativesTitle"
@@ -101,43 +129,8 @@
               <span id="optionCount" class="count"></span>
             </div>
             <div id="alternativesContent"></div>
+            <a class="next" href="?page=route">Открыть расписание →</a>
           </section>
-
-          <section class="how-it-works" aria-labelledby="howTitle">
-            <p class="eyebrow">ЗА КУЛИСАМИ</p>
-            <h2 id="howTitle">Как Альфред принимает решение</h2>
-            <div class="steps">
-              <div>
-                <b>01</b><strong>Получает статус</strong
-                ><span>Локальный API имитирует поставщика данных о рейсе.</span>
-              </div>
-              <div>
-                <b>02</b><strong>Проверяет маршрут</strong
-                ><span
-                  >Сверяет время прилёта с трансфером и остальным планом.</span
-                >
-              </div>
-              <div>
-                <b>03</b><strong>Предлагает варианты</strong
-                ><span
-                  >Учитывает группу, багаж, визовые условия и запас
-                  времени.</span
-                >
-              </div>
-              <div>
-                <b>04</b><strong>Обновляет план</strong
-                ><span
-                  >После выбора меняет связанные события для всех
-                  участников.</span
-                >
-              </div>
-            </div>
-          </section>
-
-          <footer class="page-footer">
-            Учебный прототип · Данные демонстрационные · Паспортные данные не
-            собираются и не хранятся
-          </footer>
         </div>
       </main>
     </div>
