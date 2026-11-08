@@ -52,6 +52,7 @@ const scenarios = {
       },
       {
         id: "train",
+        transferDetail: "Отправление с вокзала Roma Termini",
         kind: "Поезд",
         title: "Поезд через Roma Termini",
         details: "Аэропорт → вокзал → Флоренция · прибытие около 20:05",
@@ -64,6 +65,22 @@ const scenarios = {
         activityTime: "10:00",
         activityDate: "13 ноября",
         activityTitle: "Прогулка по центру Флоренции · перенесена",
+      },
+      {
+        id: "coach",
+        kind: "Автобус",
+        title: "Вечерний автобус",
+        details: "Фьюмичино → Флоренция · прямой маршрут",
+        price: "€84 за группу",
+        checks: ["3 места", "3 чемодана"],
+        flightTime: "10:20–15:00",
+        transferTitle: "Автобус · Рим → Флоренция",
+        transferDetail: "Автостанция аэропорта · 3 билета с багажом",
+        transferTime: "18:00–21:40",
+        hotelTime: "после 21:40",
+        activityTitle: "Прогулка у моста Понте-Веккьо",
+        activityDate: "13 ноября",
+        activityTime: "11:00",
       },
     ],
     rejected: {
@@ -111,6 +128,21 @@ const scenarios = {
         activityTime: "10:00",
         activityDate: "14 ноября",
         activityTitle: "Прогулка по центру Флоренции · перенесена",
+      },
+      {
+        id: "evening-flight",
+        kind: "Рейс",
+        title: "Вечерний вылет в Рим",
+        details: "Москва → Рим · прямой рейс в тот же день",
+        price: "от €355 / чел.",
+        checks: ["3 места", "3 чемодана", "Без транзита"],
+        flightTime: "16:00–18:30",
+        flightTitle: "Рейс SU 2412 · Москва → Рим",
+        transferTime: "20:00–23:00",
+        hotelTime: "после 23:00",
+        activityTitle: "Утренняя прогулка по Флоренции",
+        activityDate: "13 ноября",
+        activityTime: "11:30",
       },
     ],
     rejected: {
@@ -167,7 +199,11 @@ async function loadFlightStatus(scenario) {
     const response = await fetch("./data/flight-statuses.json");
     if (!response.ok) throw new Error("Не удалось загрузить статус");
     const data = await response.json();
-    return { flightId: data.flightId, scheduled: data.scheduled, ...data.scenarios[scenario] };
+    return {
+      flightId: data.flightId,
+      scheduled: data.scheduled,
+      ...data.scenarios[scenario],
+    };
   }
   const response = await fetch(
     `/api/flight-status?scenario=${encodeURIComponent(scenario)}`,
@@ -193,6 +229,7 @@ function currentPlan() {
   plan.flight.date = option.flightDate || plan.flight.date;
   plan.transfer.time = option.transferTime;
   plan.transfer.title = option.transferTitle || plan.transfer.title;
+  plan.transfer.detail = option.transferDetail || plan.transfer.detail;
   plan.transfer.date = option.transferDate || plan.transfer.date;
   plan.hotel.time = option.hotelTime;
   plan.hotel.date = option.hotelDate || plan.hotel.date;
@@ -208,7 +245,7 @@ function renderTimeline() {
     .map(
       ([key, event]) => `
     <article class="timeline-item">
-      <span class="event-icon ${key}">${event.icon}</span>
+      <div class="board-type">${{ flight: "Авиа", transfer: "Дорога", hotel: "Отель", activity: "Досуг" }[key]}</div>
       <div class="event-main"><strong>${escapeHtml(event.title)}</strong><p>${escapeHtml(event.detail)}</p></div>
       <div class="event-time ${state.selectedOption ? "changed" : ""}">${escapeHtml(event.time)}<small>${escapeHtml(event.date)}</small></div>
     </article>`,
@@ -270,21 +307,33 @@ function renderOptions() {
   // даёт минуты ожидания независимо от часового пояса ноутбука.
   const departures = {
     "late-transfer": "2026-11-12T16:30:00+01:00",
+    coach: "2026-11-12T18:00:00+01:00",
     train: "2026-11-12T17:20:00+01:00",
   };
-  const options = scenario.options.flatMap(option => {
+  const options = scenario.options.flatMap((option) => {
     if (!departures[option.id]) return [option];
-    const minutes = (Date.parse(departures[option.id]) - Date.parse(state.flightStatus?.estimatedArrival)) / 60000;
+    const minutes =
+      (Date.parse(departures[option.id]) -
+        Date.parse(state.flightStatus?.estimatedArrival)) /
+      60000;
     if (!Number.isFinite(minutes) || minutes < 60) return [];
-    return [{ ...option, checks: [...option.checks.slice(0, 2), `До отправления: ${minutes} мин`] }];
+    return [
+      {
+        ...option,
+        checks: [
+          ...option.checks.slice(0, 2),
+          `До отправления: ${minutes} мин`,
+        ],
+      },
+    ];
   });
   $("#optionCount").textContent = `Доступно: ${options.length}`;
   container.innerHTML = `<div class="option-list">${options
     .map(
       (option) => `
-    <article class="option-card ${option.recommended ? "recommended" : ""}">
-      <div><div class="option-top"><strong>${escapeHtml(option.title)}</strong>${option.recommended ? '<span class="option-badge">Рекомендуем</span>' : ""}</div><p>${escapeHtml(option.kind)} · ${escapeHtml(option.details)}</p><div class="checks">${option.checks.map((check) => `<span class="check">✓ ${escapeHtml(check)}</span>`).join("")}</div></div>
-      <div class="option-action"><strong>${escapeHtml(option.price)}</strong><button type="button" data-option="${escapeHtml(option.id)}" ${state.selectedOption?.id === option.id ? "disabled" : ""}>${state.selectedOption?.id === option.id ? "Выбрано" : "Выбрать"}</button></div>
+    <article class="option-card ${state.selectedOption?.id === option.id ? "chosen" : ""} ${option.recommended ? "recommended" : ""}">
+      <div><small class="fare-kind">${escapeHtml(option.kind)}</small><div class="option-top"><strong>${escapeHtml(option.title)}</strong>${option.recommended ? '<span class="option-badge">Рекомендуем</span>' : ""}</div><p>${escapeHtml(option.details)}</p><div class="checks">${option.checks.map((check) => `<span class="check">✓ ${escapeHtml(check)}</span>`).join("")}</div></div>
+      <div class="option-action"><strong>${escapeHtml(option.price)}</strong><button type="button" data-option="${escapeHtml(option.id)}" ${state.selectedOption?.id === option.id ? "disabled" : ""}>${state.selectedOption?.id === option.id ? "В плане ✓" : "В план →"}</button></div>
     </article>`,
     )
     .join("")}
@@ -295,7 +344,11 @@ function renderOptions() {
 function render() {
   renderTimeline();
   $("#coverStatus").textContent = $("#planStatus").textContent;
-  try { localStorage.setItem("alfred-trip-v1", JSON.stringify(state)); } catch { /* Хранилище может быть отключено. */ }
+  try {
+    localStorage.setItem("alfred-trip-v1", JSON.stringify(state));
+  } catch {
+    /* Хранилище может быть отключено. */
+  }
   renderAlert();
   renderOptions();
   document
@@ -364,8 +417,13 @@ try {
   const saved = JSON.parse(localStorage.getItem("alfred-trip-v1"));
   if (saved && ["normal", "delay", "cancel"].includes(saved.scenario)) {
     Object.assign(state, saved);
-    state.selectedOption = scenarios[state.scenario]?.options.find(option => option.id === saved.selectedOption?.id) || null;
+    state.selectedOption =
+      scenarios[state.scenario]?.options.find(
+        (option) => option.id === saved.selectedOption?.id,
+      ) || null;
   }
-} catch { /* Повреждённый снимок не мешает открыть исходный маршрут. */ }
+} catch {
+  /* Повреждённый снимок не мешает открыть исходный маршрут. */
+}
 
 render();
