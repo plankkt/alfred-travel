@@ -1,6 +1,9 @@
 """Local demo server: static site plus a small flight-status API."""
 
+import argparse
+import errno
 import json
+import subprocess
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -46,5 +49,18 @@ class DemoHandler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print("Альфред запущен: http://localhost:8000", flush=True)
-    ThreadingHTTPServer(("127.0.0.1", 8000), DemoHandler).serve_forever()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--open", action="store_true", help="Открыть сайт на Mac")
+    args = parser.parse_args()
+    try:
+        server = ThreadingHTTPServer(("127.0.0.1", 8000), DemoHandler)
+    except OSError as error:
+        if not args.open or error.errno != errno.EADDRINUSE:
+            raise
+        server = ThreadingHTTPServer(("127.0.0.1", 0), DemoHandler)
+    with server:
+        url = f"http://127.0.0.1:{server.server_port}/?page=overview"
+        print(f"Альфред запущен: {url}", flush=True)
+        if args.open:
+            subprocess.run(["open", url], check=True)
+        server.serve_forever()
