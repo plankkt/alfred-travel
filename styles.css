@@ -416,3 +416,71 @@ button:hover,
     width: 100%;
   }
 }
+.main {
+  max-width: none;
+  padding-inline: clamp(12px, 3.5vw, 75px);
+}
+.content {
+  min-width: 0;
+}
+.hero {
+  min-height: clamp(330px, 50vw, 640px);
+}
+.gallery {
+  margin-top: clamp(28px, 4vw, 64px);
+}
+.fare-group {
+  margin-block: 24px 38px;
+}
+.fare-group h3 {
+  font-size: clamp(19px, 2vw, 28px);
+  font-weight: 500;
+}
+.option-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 255px), 1fr));
+}
+.option-card {
+  min-width: 0;
+}
+.fare-photo,
+.trip-tile img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2.1;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.option-action {
+  flex-wrap: wrap;
+}
+.destination-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr));
+  gap: 16px;
+}
+.trip-tile {
+  display: grid;
+  gap: 10px;
+}
+.trip-tile span {
+  display: grid;
+  gap: 5px;
+}
+.trip-tile strong {
+  font-size: clamp(19px, 2vw, 27px);
+}
+@media (max-width: 480px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  h1 {
+    font-size: clamp(34px, 9.5vw, 48px);
+  }
+  .boarding,
+  .glass-pass {
+    min-width: 0;
+  }
+  .section-heading {
+    flex-wrap: wrap;
+  }
+}

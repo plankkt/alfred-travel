@@ -181,7 +181,45 @@ function renderOptions() {
       '<div class="empty-options">Нет сети. Новые варианты появятся после подключения.</div>';
     return;
   }
-  const scenario = scenarios[state.scenario];
+  container.innerHTML = optionGroup(state.scenario, false);
+  $("#optionCount").textContent =
+    "Доступно: " + container.querySelectorAll("[data-option]").length;
+}
+
+function photoFor(option) {
+  return (
+    { "late-transfer": "transfer", train: "train", coach: "coach" }[
+      option.id
+    ] || "flight"
+  );
+}
+
+function renderOverview() {
+  const overview = $("#overviewOptions");
+  if (state.queuedAlert) {
+    overview.textContent =
+      "Варианты для нового статуса появятся после подключения.";
+    return;
+  }
+  overview.innerHTML = ["delay", "cancel"]
+    .map((key) => {
+      const heading =
+        key === "delay" ? "При задержке рейса" : "При отмене рейса";
+      return `<section class="fare-group"><h3>${heading}</h3>${optionGroup(key, key !== state.scenario)}</section>`;
+    })
+    .join("");
+}
+
+$("#otherTrips").innerHTML = Object.entries(routes)
+  .filter(([id]) => id !== tripId)
+  .map(
+    ([id, place]) =>
+      `<a class="trip-tile" href="?page=overview&trip=${id}"><img loading="lazy" src="./assets/${id}.jpg" alt=""><span><small>${place.country}</small><strong>${place.city} и ${place.town} ↗</strong></span></a>`,
+  )
+  .join("");
+
+function optionGroup(key, preview) {
+  const scenario = scenarios[key];
   // Время отправления указано в местной зоне Рима. Разность ISO-дат
   // даёт минуты ожидания независимо от часового пояса ноутбука.
   const departures = {
@@ -193,7 +231,11 @@ function renderOptions() {
     if (!departures[option.id]) return [option];
     const minutes =
       (Date.parse(departures[option.id]) -
-        Date.parse(state.flightStatus?.estimatedArrival)) /
+        Date.parse(
+          preview
+            ? "2026-11-12T15:00:00+01:00"
+            : state.flightStatus?.estimatedArrival,
+        )) /
       60000;
     if (!Number.isFinite(minutes) || minutes < 60) return [];
     return [
@@ -206,13 +248,12 @@ function renderOptions() {
       },
     ];
   });
-  $("#optionCount").textContent = `Доступно: ${options.length}`;
-  container.innerHTML = `<div class="option-list">${options
+  return `<div class="option-list">${options
     .map(
       (option) => `
     <article class="option-card ${state.selectedOption?.id === option.id ? "chosen" : ""} ${option.recommended ? "recommended" : ""}">
-      <div><small class="fare-kind">${escapeHtml(option.kind)}</small><div class="option-top"><strong>${escapeHtml(option.title)}</strong>${option.recommended ? '<span class="option-badge">Рекомендуем</span>' : ""}</div><p>${escapeHtml(option.details)}</p><div class="checks">${option.checks.map((check) => `<span class="check">✓ ${escapeHtml(check)}</span>`).join("")}</div></div>
-      <div class="option-action"><strong>${escapeHtml(option.price)}</strong><button type="button" data-option="${escapeHtml(option.id)}" ${state.selectedOption?.id === option.id ? "disabled" : ""}>${state.selectedOption?.id === option.id ? "В плане ✓" : "В план →"}</button></div>
+      <img class="fare-photo" loading="lazy" alt="" src="./assets/transport/${photoFor(option)}.jpg"><div><small class="fare-kind">${escapeHtml(option.kind)}</small><div class="option-top"><strong>${escapeHtml(option.title)}</strong>${option.recommended ? '<span class="option-badge">Рекомендуем</span>' : ""}</div><p>${escapeHtml(option.details)}</p><div class="checks">${option.checks.map((check) => `<span class="check">✓ ${escapeHtml(check)}</span>`).join("")}</div></div>
+      <div class="option-action"><strong>${escapeHtml(option.price)}</strong><button type="button" data-option="${escapeHtml(option.id)}" data-kind="${key}" ${state.selectedOption?.id === option.id ? "disabled" : ""}>${state.selectedOption?.id === option.id ? "В плане ✓" : preview ? "Выбрать в демо" : "В план →"}</button></div>
     </article>`,
     )
     .join("")}
@@ -230,6 +271,7 @@ function render() {
   }
   renderAlert();
   renderOptions();
+  renderOverview();
   document
     .querySelectorAll("[data-scenario]")
     .forEach((button) =>
@@ -274,6 +316,23 @@ document.addEventListener("click", async (event) => {
   }
   const optionButton = event.target.closest("[data-option]");
   if (optionButton) {
+    const key = optionButton.dataset.kind;
+    if (key !== state.scenario) {
+      if (!state.online) {
+        notify("Подключитесь, чтобы выбрать вариант");
+        return;
+      }
+      const requestId = ++latestRequest;
+      try {
+        const status = await loadFlightStatus(key);
+        if (requestId !== latestRequest || !state.online) return;
+        state.flightStatus = status;
+        state.scenario = key;
+      } catch (error) {
+        notify(error.message);
+        return;
+      }
+    }
     state.selectedOption =
       scenarios[state.scenario].options.find(
         (option) => option.id === optionButton.dataset.option,
